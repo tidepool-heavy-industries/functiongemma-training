@@ -1,0 +1,47 @@
+# Nix
+result
+result-*
+.direnv/
+.nix-lib-path
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Haskell
+dist/
+dist-newstyle/
+cabal.project.local
+.ghc.environment.*
+*.hi
+*.o
+
+# HuggingFace cache (if not using $HOME/.cache)
+models/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local environment
+.env.local
+
+# Miniconda installer (use Nix instead)
+Miniconda*.sh
