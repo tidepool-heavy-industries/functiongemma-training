@@ -45,3 +45,11 @@ Thumbs.db
 
 # Miniconda installer (use Nix instead)
 Miniconda*.sh
+# Model files (too large for git)
+training-runs/*/checkpoints/
+training-runs/*/merged_model*/
+*.gguf
+merged_model*/
+checkpoints/
+outputs/
+unsloth_compiled_cache/
