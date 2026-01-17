@@ -56,19 +56,13 @@
           AppKit
         ];
 
-        # Use GCC 12 for CUDA compatibility (GCC 15 is too new)
-        cudaGcc = pkgs.gcc12;
-
         linuxLibs = with pkgs; [
+          cudaPackages.cuda_nvcc
           cudaPackages.cudatoolkit
           cudaPackages.cudnn
           cudaPackages.nccl
           # Do NOT include nvidia_x11 on WSL2 - we use the Windows host driver
-          libgcc
-          glibc
-          glibc.dev  # C headers for nvcc
-          stdenv.cc.cc.lib
-          cudaGcc  # GCC 12 for CUDA compatibility
+          # backendStdenv provides GCC-compatible compiler automatically
         ];
 
         # Common build dependencies
@@ -80,6 +74,9 @@
 
           # Python environment
           pythonEnv
+
+          # Rust bindgen support
+          llvmPackages.libclang.lib
 
           # IPC and debugging
           socat
@@ -110,15 +107,7 @@
 
         } else {
           # Linux CUDA acceleration
-          # Note: LD_LIBRARY_PATH is also set in shellHook to include /usr/lib/wsl/lib
-          LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath ([
-            cudaGcc.cc.lib
-            pkgs.stdenv.cc.cc.lib
-            pkgs.cudaPackages.cudatoolkit
-            pkgs.cudaPackages.cudnn
-            pkgs.cudaPackages.nccl
-          ]);
-
+          # backendStdenv handles compiler compatibility automatically
           CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
           CUDNN_PATH = "${pkgs.cudaPackages.cudnn}";
 
@@ -129,27 +118,19 @@
           # Mistral.rs features
           MISTRALRS_FEATURES = "cuda";
 
-          # NVCC configuration - tell it which gcc to use and where to find headers
-          NVCC_CCBIN = "${cudaGcc}/bin/gcc";
-          C_INCLUDE_PATH = "${pkgs.glibc.dev}/include";
-          CPLUS_INCLUDE_PATH = "${cudaGcc}/include/c++/${cudaGcc.version}:${pkgs.glibc.dev}/include";
-
           # Rust compilation flags for CUDA
           RUSTFLAGS = "-C link-args=-Wl,-rpath,${pkgs.cudaPackages.cudatoolkit}/lib";
         };
 
         # Shell hook for additional setup
         shellHook = ''
+          # Rust bindgen needs to find libclang
+          export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
+
           ${if isLinux then ''
-            # WSL2 Driver Passthrough: Add Windows host driver path
-            # This allows Nix-built CUDA programs to access the NVIDIA driver
-            export LD_LIBRARY_PATH=/usr/lib/wsl/lib:${pkgs.lib.makeLibraryPath [
-              cudaGcc.cc.lib
-              pkgs.stdenv.cc.cc.lib
-              pkgs.cudaPackages.cudatoolkit
-              pkgs.cudaPackages.cudnn
-              pkgs.cudaPackages.nccl
-            ]}
+            # WSL2 Driver Passthrough: Prepend Windows host driver path
+            # Also add GCC stdcxx library for PyTorch in venv
+            export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:/usr/lib/wsl/lib:$LD_LIBRARY_PATH"
 
             # Verify WSL2 driver is accessible
             if [ ! -f /usr/lib/wsl/lib/libcuda.so.1 ]; then
@@ -157,15 +138,8 @@
               echo "   Ensure NVIDIA drivers are installed on your Windows host."
             fi
 
-            # Save environment variables for venv activation
-            cat > .nix-lib-path <<EOF
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
-export CUDA_PATH="${pkgs.cudaPackages.cudatoolkit}"
-export CUDNN_PATH="${pkgs.cudaPackages.cudnn}"
-export NVCC_CCBIN="${cudaGcc}/bin/gcc"
-export C_INCLUDE_PATH="${pkgs.glibc.dev}/include"
-export CPLUS_INCLUDE_PATH="${cudaGcc}/include/c++/${cudaGcc.version}:${pkgs.glibc.dev}/include"
-EOF
+            # Save library path for venv activation
+            echo "export LD_LIBRARY_PATH=\"$LD_LIBRARY_PATH\"" > .nix-lib-path
           '' else ""}
 
           echo "🚀 FunctionGemma Development Environment"
@@ -184,6 +158,9 @@ EOF
           echo "📦 Toolchains:"
           echo "  Rust:    $(rustc --version | awk '{print $2}')"
           echo "  Python:  $(python --version | awk '{print $2}')"
+          ${if isLinux then ''
+            echo "  GCC:     $(gcc --version | head -n1 | awk '{print $3}') (CUDA-compatible via backendStdenv)"
+          '' else ""}
           echo ""
           echo "📁 Cache Directory:"
           echo "  HF_HOME=$HF_HOME"
@@ -212,7 +189,13 @@ EOF
 
       in
       {
-        devShells.default = pkgs.mkShell {
+        devShells.default = (if isLinux then
+          # Use CUDA-compatible stdenv for Linux
+          pkgs.mkShell.override { stdenv = pkgs.cudaPackages.backendStdenv; }
+        else
+          # Use default stdenv for Darwin
+          pkgs.mkShell
+        ) {
           inherit buildInputs shellHook;
 
           # Export all environment variables
@@ -229,12 +212,8 @@ EOF
             RUSTFLAGS;
         } else {
           inherit (shellEnv)
-            LD_LIBRARY_PATH
             CUDA_PATH
             CUDNN_PATH
-            NVCC_CCBIN
-            C_INCLUDE_PATH
-            CPLUS_INCLUDE_PATH
             RUSTFLAGS;
         });
 

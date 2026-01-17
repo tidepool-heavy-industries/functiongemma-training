@@ -1,0 +1,26 @@
+# Modelfile for FunctionGemma Fine-tuned (Q4_K_M)
+# Uses the quantized GGUF file for efficient inference
+
+FROM /home/inanna/dev/gemma/functiongemma-270m-finetuned-Q4_K_M.gguf
+
+# Template matching training format
+TEMPLATE """{{ if .System }}<start_of_turn>developer
+{{ .System }}<end_of_turn>
+{{ end }}{{ if .Prompt }}<start_of_turn>user
+{{ .Prompt }}<end_of_turn>
+{{ end }}<start_of_turn>model
+{{ .Response }}<end_of_turn>"""
+
+# Stop tokens (prevent model from hallucinating function responses)
+PARAMETER stop "<start_of_turn>"
+PARAMETER stop "<end_of_turn>"
+PARAMETER stop "<end_function_call>"
+PARAMETER stop "<start_function_response>"
+
+# Generation parameters (optimized for function calling)
+PARAMETER temperature 0.1
+PARAMETER top_p 0.9
+PARAMETER num_ctx 4096
+
+# System message
+SYSTEM """You are an expert function calling AI assistant. Current date: 2026-01-16."""

@@ -1,0 +1,52 @@
+[
+  {
+    "query": "Please turn on the flashlight, and also schedule a calendar event titled \"Review Q4 Strategy Draft\" for Friday, November 20th, 2026 at 10:00 AM.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "I need you to open my Wi-Fi settings immediately, and also create a calendar event titled 'Team Lunch' for tomorrow at 12:45 PM.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Please turn off the flashlight and schedule a new calendar event titled \"Team Sync Up\" for October 23, 2024, at 11:00 AM.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Turn off the flashlight and save a new contact named Kenji Tanaka with the phone number 555-321-9870.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Turn on the flashlight and schedule a calendar event called 'Budget Review Call' for 10:30 AM on Wednesday, January 21st, 2026.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "I need to set up a calendar event called 'Apartment Viewing' for 2024-04-22 at 5:00 PM, and simultaneously, please show me the address 22B Elmwood Drive, Toronto, ON on the map.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Please turn on the flashlight, and also create a calendar event for 'Call with Mr. Chen' next Tuesday at 11:00 AM.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Please save a new contact named Ana Petrova with the number 555-123-4567, and also schedule a calendar event called 'Project Alpha Review' for Monday, December 28th, 2026 at 10:30 AM.",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Please turn off my flashlight, and then send an email to clara.silva@innova.org with the subject \"Project Milestone\" and the message \"We hit the target ahead of schedule. Good work team!\"",
+    "base_success": true,
+    "ft_success": true
+  },
+  {
+    "query": "Please add an event to my calendar called \"Dental Check-up\" for Friday, June 21st at 3:00 PM, and in the same action, show me the location of my dentist's office at 180 Shoreditch High Street, London.",
+    "base_success": true,
+    "ft_success": true
+  }
+]

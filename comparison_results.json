@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Please turn on the flashlight, and also schedule a calendar event titled \"Review Q4 Strategy Draft\" ...",
+    "ground_truth": "<start_function_call>\ncall:turn_on_flashlight{}\n<end_function_call>\n<start_function_call>\ncall:create_calendar_event{datetime:<escape>2026-11-20T10:00:00<escape>, title:<escape>Review Q4 Strategy Draft<escape>}\n<end_function_call>",
+    "base_call": null,
+    "finetuned_call": null,
+    "base_has_call": false,
+    "finetuned_has_call": false
+  },
+  {
+    "query": "I need you to open my Wi-Fi settings immediately, and also create a calendar event titled 'Team Lunc...",
+    "ground_truth": "<start_function_call>\ncall:open_wifi_settings{}\n<end_function_call>\n<start_function_call>\ncall:create_calendar_event{datetime:<escape>2025-04-08T12:45:00<escape>, title:<escape>Team Lunch<escape>}\n<end_function_call>",
+    "base_call": "call_wifi_settings{}",
+    "finetuned_call": null,
+    "base_has_call": true,
+    "finetuned_has_call": false
+  },
+  {
+    "query": "Please turn off the flashlight and schedule a new calendar event titled \"Team Sync Up\" for October 2...",
+    "ground_truth": "<start_function_call>\ncall:turn_off_flashlight{}\n<end_function_call>\n<start_function_call>\ncall:create_calendar_event{datetime:<escape>2024-10-23T11:00:00<escape>, title:<escape>Team Sync Up<escape>}\n<end_function_call>",
+    "base_call": null,
+    "finetuned_call": null,
+    "base_has_call": false,
+    "finetuned_has_call": false
+  },
+  {
+    "query": "Turn off the flashlight and save a new contact named Kenji Tanaka with the phone number 555-321-9870...",
+    "ground_truth": "<start_function_call>\ncall:turn_off_flashlight{}\n<end_function_call>\n<start_function_call>\ncall:create_contact{first_name:<escape>Kenji<escape>, last_name:<escape>Tanaka<escape>, phone_number:<escape>555-321-9870<escape>}\n<end_function_call>",
+    "base_call": null,
+    "finetuned_call": null,
+    "base_has_call": false,
+    "finetuned_has_call": false
+  },
+  {
+    "query": "Turn on the flashlight and schedule a calendar event called 'Budget Review Call' for 10:30 AM on Wed...",
+    "ground_truth": "<start_function_call>\ncall:turn_on_flashlight{}\n<end_function_call>\n<start_function_call>\ncall:create_calendar_event{datetime:<escape>2026-01-21T10:30:00<escape>, title:<escape>Budget Review Call<escape>}\n<end_function_call>",
+    "base_call": null,
+    "finetuned_call": null,
+    "base_has_call": false,
+    "finetuned_has_call": false
+  }
+]
